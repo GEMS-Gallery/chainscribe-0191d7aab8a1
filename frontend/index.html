@@ -1,12 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crypto Blog</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IC Cycles Payment</title>
+    <style>
+        :root {
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --border-color: #e2e8f0;
+            --slider-bg: #cbd5e0;
+            --slider-thumb: #2d3748;
+            --button-bg: #1a202c;
+            --button-hover: #2d3748;
+            --info-bg: #edf2f7;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            line-height: 1.5;
+            padding: 20px;
+        }
+        .container {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 480px;
+        }
+        h1 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--slider-thumb);
+            box-shadow: 0 0 0 3px rgba(45, 55, 72, 0.1);
+        }
+        .submit-btn {
+            background-color: var(--button-bg);
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: var(--button-hover);
+        }
+        .slider-container {
+            margin-bottom: 2rem;
+        }
+        #cycles-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--slider-bg);
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+        #cycles-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--slider-thumb);
+            cursor: pointer;
+            transition: background .15s ease-in-out;
+        }
+        #cycles-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border: 0;
+            border-radius: 50%;
+            background: var(--slider-thumb);
+            cursor: pointer;
+            transition: background .15s ease-in-out;
+        }
+        .cycles-value {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.75rem;
+        }
+        .cycles-amount, .dollar-amount {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .dollar-amount {
+            color: var(--text-secondary);
+        }
+        .info-tooltip {
+            background-color: var(--info-bg);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+        .info-tooltip h2 {
+            font-size: 1rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        .info-tooltip p {
+            margin: 0 0 0.5rem 0;
+        }
+        .info-tooltip ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Purchase IC Cycles</h1>
+        <div class="info-tooltip">
+            <h2>About IC Cycles</h2>
+            <p>Cycles are the fuel for computation on the Internet Computer.</p>
+            <ul>
+                <li>Current ICP Price: $<span id="icp-price">7.50</span></li>
+                <li>1 ICP = 10T cycles</li>
+                <li>Average website: ~380B cycles/month</li>
+            </ul>
+            <p>Calculation: (USD / ICP Price) * 10T = Cycles</p>
+        </div>
+        <form id="payment-form">
+            <div class="slider-container">
+                <label for="cycles-slider">Amount in USD</label>
+                <input type="range" id="cycles-slider" min="1" max="100" step="1" value="10">
+                <div class="cycles-value">
+                    <span class="cycles-amount">7.64B cycles</span>
+                    <span class="dollar-amount">$10.00</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="card-number">Card number</label>
+                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+            </div>
+            <div class="form-group">
+                <label for="expiry">Expiration date</label>
+                <input type="text" id="expiry" placeholder="MM / YY" required>
+            </div>
+            <div class="form-group">
+                <label for="cvv">Security code</label>
+                <input type="number" id="cvv" placeholder="123" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Name on card</label>
+                <input type="text" id="name" placeholder="John Doe" required>
+            </div>
+            <button type="submit" class="submit-btn">Pay now</button>
+        </form>
+    </div>
+
+    <script>
+        const slider = document.getElementById('cycles-slider');
+        const cyclesAmount = document.querySelector('.cycles-amount');
+        const dollarAmount = document.querySelector('.dollar-amount');
+        const icpPriceElement = document.getElementById('icp-price');
+
+        // Constants for calculation
+        const ICP_PRICE_USD = 7.50;
+        const CYCLES_PER_ICP = 10_000_000_000_000n; // 10 trillion cycles per ICP
+
+        function abbreviateNumber(value) {
+            const suffixes = ["", "K", "M", "B", "T"];
+            let suffixNum = 0;
+            while (value >= 1000 && suffixNum < suffixes.length - 1) {
+                suffixNum++;
+                value /= 1000;
+            }
+            
+            let precision = 2;
+            if (value >= 100) precision = 0;
+            else if (value >= 10) precision = 1;
+            
+            return value.toFixed(precision) + suffixes[suffixNum];
+        }
+
+        function updateCyclesValue(usdValue) {
+            const icp = usdValue / ICP_PRICE_USD;
+            const cycles = BigInt(Math.floor(icp * Number(CYCLES_PER_ICP)));
+            
+            cyclesAmount.textContent = `${abbreviateNumber(Number(cycles))} cycles`;
+            dollarAmount.textContent = `$${parseFloat(usdValue).toFixed(2)}`;
+        }
+
+        slider.addEventListener('input', (e) => updateCyclesValue(e.target.value));
+
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Payment submitted');
+            alert('Payment processed successfully!');
+        });
+
+        // Initialize with default value
+        updateCyclesValue(slider.value);
+
+        // Update ICP price in the info tooltip
+        icpPriceElement.textContent = ICP_PRICE_USD.toFixed(2);
+    </script>
+</body>
 </html>
