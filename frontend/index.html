@@ -8,89 +8,94 @@
         import { HttpAgent, Actor } from "@dfinity/agent";
         import { idlFactory } from "./declarations/backend/backend.did.js";
 
-        const canisterId = 'YOUR_CANISTER_ID_HERE';
+        const canisterId = 'rrkah-fqaaa-aaaaa-aaaaq-cai'; // Replace with actual canister ID
         
         async function init() {
-            const agent = new HttpAgent();
-            const backend = Actor.createActor(idlFactory, { agent, canisterId });
+            try {
+                const agent = new HttpAgent();
+                const backend = Actor.createActor(idlFactory, { agent, canisterId });
 
-            async function initializeTeams() {
-                const teams = await backend.getTeams();
-                const teamSelect = document.getElementById('team-select');
-                teams.forEach(team => {
-                    const option = document.createElement('option');
-                    option.value = team;
-                    option.textContent = team;
-                    teamSelect.appendChild(option);
-                });
-            }
-
-            function formatDate(dateString) {
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                return new Date(dateString).toLocaleDateString('en-US', options);
-            }
-
-            function groupGamesByDate(games) {
-                return games.reduce((acc, game) => {
-                    (acc[game.date] = acc[game.date] || []).push(game);
-                    return acc;
-                }, {});
-            }
-
-            async function displaySchedule(team) {
-                const scheduleDiv = document.getElementById('schedule');
-                scheduleDiv.innerHTML = '';
-
-                const result = await backend.getScheduleForTeam(team);
-                if ('err' in result) {
-                    scheduleDiv.innerHTML = `<p>Error: ${result.err}</p>`;
-                    return;
-                }
-
-                const games = result.ok;
-                const groupedGames = groupGamesByDate(games);
-                
-                for (const [date, dayGames] of Object.entries(groupedGames)) {
-                    const dayDiv = document.createElement('div');
-                    dayDiv.className = 'game-day';
-                    
-                    const dayHeader = document.createElement('div');
-                    dayHeader.className = 'day-header';
-                    dayHeader.textContent = formatDate(date);
-                    dayDiv.appendChild(dayHeader);
-                    
-                    dayGames.forEach(game => {
-                        const gameDiv = document.createElement('div');
-                        gameDiv.className = 'game';
-                        gameDiv.innerHTML = `
-                            <div class="team">
-                                <div class="team-logo"></div>
-                                <div class="team-name">${game.away}</div>
-                            </div>
-                            <div class="game-info">
-                                <div>${game.time}</div>
-                                <div>@</div>
-                            </div>
-                            <div class="team">
-                                <div class="team-logo"></div>
-                                <div class="team-name">${game.home}</div>
-                            </div>
-                        `;
-                        dayDiv.appendChild(gameDiv);
+                async function initializeTeams() {
+                    const teams = await backend.getTeams();
+                    const teamSelect = document.getElementById('team-select');
+                    teams.forEach(team => {
+                        const option = document.createElement('option');
+                        option.value = team;
+                        option.textContent = team;
+                        teamSelect.appendChild(option);
                     });
+                }
+
+                function formatDate(dateString) {
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    return new Date(dateString).toLocaleDateString('en-US', options);
+                }
+
+                function groupGamesByDate(games) {
+                    return games.reduce((acc, game) => {
+                        (acc[game.date] = acc[game.date] || []).push(game);
+                        return acc;
+                    }, {});
+                }
+
+                async function displaySchedule(team) {
+                    const scheduleDiv = document.getElementById('schedule');
+                    scheduleDiv.innerHTML = '';
+
+                    const result = await backend.getScheduleForTeam(team);
+                    if ('err' in result) {
+                        scheduleDiv.innerHTML = `<p>Error: ${result.err}</p>`;
+                        return;
+                    }
+
+                    const games = result.ok;
+                    const groupedGames = groupGamesByDate(games);
                     
-                    scheduleDiv.appendChild(dayDiv);
+                    for (const [date, dayGames] of Object.entries(groupedGames)) {
+                        const dayDiv = document.createElement('div');
+                        dayDiv.className = 'game-day';
+                        
+                        const dayHeader = document.createElement('div');
+                        dayHeader.className = 'day-header';
+                        dayHeader.textContent = formatDate(date);
+                        dayDiv.appendChild(dayHeader);
+                        
+                        dayGames.forEach(game => {
+                            const gameDiv = document.createElement('div');
+                            gameDiv.className = 'game';
+                            gameDiv.innerHTML = `
+                                <div class="team">
+                                    <div class="team-logo"></div>
+                                    <div class="team-name">${game.away}</div>
+                                </div>
+                                <div class="game-info">
+                                    <div>${game.time}</div>
+                                    <div>@</div>
+                                </div>
+                                <div class="team">
+                                    <div class="team-logo"></div>
+                                    <div class="team-name">${game.home}</div>
+                                </div>
+                            `;
+                            dayDiv.appendChild(gameDiv);
+                        });
+                        
+                        scheduleDiv.appendChild(dayDiv);
+                    }
                 }
+
+                document.getElementById('team-select').addEventListener('change', (e) => {
+                    const selectedTeam = e.target.value;
+                    if (selectedTeam) {
+                        displaySchedule(selectedTeam);
+                    }
+                });
+
+                await initializeTeams();
+            } catch (error) {
+                console.error('Error initializing the application:', error);
+                document.body.innerHTML = `<p>Error initializing the application. Please check the console for more details.</p>`;
             }
-
-            document.getElementById('team-select').addEventListener('change', (e) => {
-                const selectedTeam = e.target.value;
-                if (selectedTeam) {
-                    displaySchedule(selectedTeam);
-                }
-            });
-
-            await initializeTeams();
         }
 
         document.addEventListener('DOMContentLoaded', init);
