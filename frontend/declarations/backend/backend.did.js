@@ -10,7 +10,6 @@ export const idlFactory = ({ IDL }) => {
   return IDL.Service({
     'getScheduleForTeam' : IDL.Func([IDL.Text], [Result], ['query']),
     'getTeams' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
-    'initializeSchedules' : IDL.Func([], [], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

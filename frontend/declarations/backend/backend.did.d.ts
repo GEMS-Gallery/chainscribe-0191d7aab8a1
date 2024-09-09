@@ -14,7 +14,6 @@ export type Schedule = Array<Game>;
 export interface _SERVICE {
   'getScheduleForTeam' : ActorMethod<[string], Result>,
   'getTeams' : ActorMethod<[], Array<string>>,
-  'initializeSchedules' : ActorMethod<[], undefined>,
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

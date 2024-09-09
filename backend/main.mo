@@ -30,9 +30,9 @@ actor {
     "Seattle Seahawks", "Tampa Bay Buccaneers", "Tennessee Titans", "Washington Commanders"
   ];
 
-  let schedules = HashMap.HashMap<Text, Schedule>(32, Text.equal, Text.hash);
+  var schedules = HashMap.HashMap<Text, Schedule>(32, Text.equal, Text.hash);
 
-  public func initializeSchedules() : async () {
+  func initializeSchedules() {
     for (team in teams.vals()) {
       let schedule : Schedule = [
         { date = "2024-09-08"; time = "13:00"; away = team; home = "Opponent 1" },
@@ -50,6 +50,20 @@ actor {
     switch (schedules.get(team)) {
       case (null) { #err("Team not found") };
       case (?schedule) { #ok(schedule) };
+    };
+  };
+
+  // System functions for canister lifecycle management
+  stable var initialized = false;
+
+  system func preupgrade() {
+    // Save any necessary state before upgrade
+  };
+
+  system func postupgrade() {
+    if (not initialized) {
+      initializeSchedules();
+      initialized := true;
     };
   };
 }

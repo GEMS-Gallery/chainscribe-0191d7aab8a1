@@ -14,5 +14,4 @@ type Game =
 service : {
   getScheduleForTeam: (text) -> (Result) query;
   getTeams: () -> (vec text) query;
-  initializeSchedules: () -> ();
 }
