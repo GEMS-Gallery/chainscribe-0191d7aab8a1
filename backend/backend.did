@@ -1,17 +1,18 @@
+type Schedule = vec Game;
 type Result = 
  variant {
    err: text;
-   ok: Post;
+   ok: Schedule;
  };
-type Post = 
+type Game = 
  record {
-   author: text;
-   body: text;
-   id: nat;
-   timestamp: int;
-   title: text;
+   away: text;
+   date: text;
+   home: text;
+   time: text;
  };
 service : {
-  createPost: (text, text, text) -> (Result);
-  getPosts: () -> (vec Post) query;
+  getScheduleForTeam: (text) -> (Result) query;
+  getTeams: () -> (vec text) query;
+  initializeSchedules: () -> ();
 }

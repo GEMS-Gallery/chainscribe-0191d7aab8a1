@@ -1,39 +1,55 @@
-import Nat "mo:base/Nat";
+import Char "mo:base/Char";
+import Hash "mo:base/Hash";
 
 import Array "mo:base/Array";
 import Time "mo:base/Time";
 import Result "mo:base/Result";
 import Int "mo:base/Int";
 import Text "mo:base/Text";
+import HashMap "mo:base/HashMap";
+import Iter "mo:base/Iter";
 
 actor {
-  type Post = {
-    id: Nat;
-    title: Text;
-    body: Text;
-    author: Text;
-    timestamp: Int;
+  type Game = {
+    date: Text;
+    time: Text;
+    away: Text;
+    home: Text;
   };
 
-  stable var posts : [Post] = [];
-  stable var nextId : Nat = 0;
+  type Schedule = [Game];
 
-  public func createPost(title: Text, body: Text, author: Text) : async Result.Result<Post, Text> {
-    let post : Post = {
-      id = nextId;
-      title = title;
-      body = body;
-      author = author;
-      timestamp = Time.now();
+  let teams = [
+    "Arizona Cardinals", "Atlanta Falcons", "Baltimore Ravens", "Buffalo Bills",
+    "Carolina Panthers", "Chicago Bears", "Cincinnati Bengals", "Cleveland Browns",
+    "Dallas Cowboys", "Denver Broncos", "Detroit Lions", "Green Bay Packers",
+    "Houston Texans", "Indianapolis Colts", "Jacksonville Jaguars", "Kansas City Chiefs",
+    "Las Vegas Raiders", "Los Angeles Chargers", "Los Angeles Rams", "Miami Dolphins",
+    "Minnesota Vikings", "New England Patriots", "New Orleans Saints", "New York Giants",
+    "New York Jets", "Philadelphia Eagles", "Pittsburgh Steelers", "San Francisco 49ers",
+    "Seattle Seahawks", "Tampa Bay Buccaneers", "Tennessee Titans", "Washington Commanders"
+  ];
+
+  let schedules = HashMap.HashMap<Text, Schedule>(32, Text.equal, Text.hash);
+
+  public func initializeSchedules() : async () {
+    for (team in teams.vals()) {
+      let schedule : Schedule = [
+        { date = "2024-09-08"; time = "13:00"; away = team; home = "Opponent 1" },
+        { date = "2024-09-15"; time = "16:25"; away = "Opponent 2"; home = team }
+      ];
+      schedules.put(team, schedule);
     };
-    posts := Array.append(posts, [post]);
-    nextId += 1;
-    #ok(post)
   };
 
-  public query func getPosts() : async [Post] {
-    Array.sort(posts, func(a: Post, b: Post) : { #less; #equal; #greater } {
-      Int.compare(b.timestamp, a.timestamp)
-    })
+  public query func getTeams() : async [Text] {
+    return teams;
+  };
+
+  public query func getScheduleForTeam(team: Text) : async Result.Result<Schedule, Text> {
+    switch (schedules.get(team)) {
+      case (null) { #err("Team not found") };
+      case (?schedule) { #ok(schedule) };
+    };
   };
 }

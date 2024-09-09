@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFL Schedule - Next Week</title>
+    <title>NFL Schedule - Full Year</title>
     <style>
         :root {
             --primary-color: #635BFF;
@@ -32,6 +32,15 @@
             color: var(--secondary-color);
             font-size: 2.5rem;
             margin-bottom: 2rem;
+        }
+        
+        .team-select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
         }
         
         .game-day {
@@ -103,22 +112,37 @@
 </head>
 <body>
     <div class="container">
-        <h1>NFL Schedule - Next Week</h1>
+        <h1>NFL Schedule - Full Year</h1>
+        <select id="team-select" class="team-select">
+            <option value="">Select a team</option>
+        </select>
         <div id="schedule"></div>
     </div>
 
+    <script src="https://unpkg.com/@dfinity/agent/lib/index.js"></script>
     <script>
-        const games = [
-            { date: "2024-09-12", time: "20:15", away: "Minnesota Vikings", home: "Philadelphia Eagles" },
-            { date: "2024-09-15", time: "13:00", away: "Green Bay Packers", home: "Atlanta Falcons" },
-            { date: "2024-09-15", time: "13:00", away: "Las Vegas Raiders", home: "Buffalo Bills" },
-            { date: "2024-09-15", time: "13:00", away: "Baltimore Ravens", home: "Cincinnati Bengals" },
-            { date: "2024-09-15", time: "13:00", away: "Seattle Seahawks", home: "Detroit Lions" },
-            { date: "2024-09-15", time: "16:05", away: "Washington Commanders", home: "Denver Broncos" },
-            { date: "2024-09-15", time: "16:25", away: "New York Jets", home: "Dallas Cowboys" },
-            { date: "2024-09-15", time: "20:20", away: "Miami Dolphins", home: "New England Patriots" },
-            { date: "2024-09-16", time: "20:15", away: "New Orleans Saints", home: "Carolina Panthers" }
-        ];
+        const canisterId = 'YOUR_CANISTER_ID_HERE';
+        const agent = new window.ic.HttpAgent();
+        const backend = window.ic.createActor(canisterId, {
+            agent,
+            interfaceFactory: ({ IDL }) => {
+                return IDL.Service({
+                    getTeams: IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+                    getScheduleForTeam: IDL.Func([IDL.Text], [IDL.Variant({ 'ok': IDL.Vec(IDL.Record({ 'date': IDL.Text, 'time': IDL.Text, 'away': IDL.Text, 'home': IDL.Text })), 'err': IDL.Text })], ['query'])
+                });
+            }
+        });
+
+        async function initializeTeams() {
+            const teams = await backend.getTeams();
+            const teamSelect = document.getElementById('team-select');
+            teams.forEach(team => {
+                const option = document.createElement('option');
+                option.value = team;
+                option.textContent = team;
+                teamSelect.appendChild(option);
+            });
+        }
 
         function formatDate(dateString) {
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -132,8 +156,17 @@
             }, {});
         }
 
-        function displaySchedule() {
+        async function displaySchedule(team) {
             const scheduleDiv = document.getElementById('schedule');
+            scheduleDiv.innerHTML = '';
+
+            const result = await backend.getScheduleForTeam(team);
+            if ('err' in result) {
+                scheduleDiv.innerHTML = `<p>Error: ${result.err}</p>`;
+                return;
+            }
+
+            const games = result.ok;
             const groupedGames = groupGamesByDate(games);
             
             for (const [date, dayGames] of Object.entries(groupedGames)) {
@@ -169,7 +202,14 @@
             }
         }
 
-        displaySchedule();
+        document.getElementById('team-select').addEventListener('change', (e) => {
+            const selectedTeam = e.target.value;
+            if (selectedTeam) {
+                displaySchedule(selectedTeam);
+            }
+        });
+
+        initializeTeams();
     </script>
 </body>
 </html>
