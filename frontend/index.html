@@ -3,240 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IC Cycles Payment</title>
+    <title>NFL Schedule - Next Week</title>
     <style>
         :root {
-            --bg-color: #f7fafc;
-            --card-bg: #ffffff;
-            --text-primary: #1a202c;
-            --text-secondary: #4a5568;
-            --border-color: #e2e8f0;
-            --slider-bg: #cbd5e0;
-            --slider-thumb: #2d3748;
-            --button-bg: #1a202c;
-            --button-hover: #2d3748;
-            --info-bg: #edf2f7;
+            --primary-color: #635BFF;
+            --secondary-color: #0A2540;
+            --background-color: #F6F9FC;
+            --text-color: #425466;
+            --border-color: #E6E8EB;
         }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
             margin: 0;
-            line-height: 1.5;
-            padding: 20px;
+            padding: 40px 20px;
         }
+        
         .container {
-            background-color: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-            width: 100%;
-            max-width: 480px;
+            max-width: 800px;
+            margin: 0 auto;
         }
+        
         h1 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.875rem;
-        }
-        input[type="text"],
-        input[type="number"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        input[type="text"]:focus,
-        input[type="number"]:focus {
-            outline: none;
-            border-color: var(--slider-thumb);
-            box-shadow: 0 0 0 3px rgba(45, 55, 72, 0.1);
-        }
-        .submit-btn {
-            background-color: var(--button-bg);
-            color: white;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-        .submit-btn:hover {
-            background-color: var(--button-hover);
-        }
-        .slider-container {
+            text-align: center;
+            color: var(--secondary-color);
+            font-size: 2.5rem;
             margin-bottom: 2rem;
         }
-        #cycles-slider {
-            width: 100%;
-            -webkit-appearance: none;
-            height: 6px;
-            border-radius: 3px;
-            background: var(--slider-bg);
-            outline: none;
-            padding: 0;
-            margin: 0;
+        
+        .game-day {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            overflow: hidden;
         }
-        #cycles-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--slider-thumb);
-            cursor: pointer;
-            transition: background .15s ease-in-out;
-        }
-        #cycles-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border: 0;
-            border-radius: 50%;
-            background: var(--slider-thumb);
-            cursor: pointer;
-            transition: background .15s ease-in-out;
-        }
-        .cycles-value {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 0.75rem;
-        }
-        .cycles-amount, .dollar-amount {
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        .dollar-amount {
-            color: var(--text-secondary);
-        }
-        .info-tooltip {
-            background-color: var(--info-bg);
-            border-radius: 6px;
+        
+        .day-header {
+            background-color: var(--secondary-color);
+            color: white;
             padding: 1rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
-        .info-tooltip h2 {
-            font-size: 1rem;
-            margin-top: 0;
-            margin-bottom: 0.5rem;
+        
+        .game {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
         }
-        .info-tooltip p {
-            margin: 0 0 0.5rem 0;
+        
+        .game:last-child {
+            border-bottom: none;
         }
-        .info-tooltip ul {
-            margin: 0;
-            padding-left: 1.5rem;
+        
+        .team {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .team-logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .team-name {
+            font-weight: 500;
+        }
+        
+        .game-info {
+            text-align: center;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 600px) {
+            .game {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .team {
+                margin-bottom: 0.5rem;
+            }
+            
+            .game-info {
+                align-self: flex-end;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Purchase IC Cycles</h1>
-        <div class="info-tooltip">
-            <h2>About IC Cycles</h2>
-            <p>Cycles are the fuel for computation on the Internet Computer.</p>
-            <ul>
-                <li>Current ICP Price: $<span id="icp-price">7.50</span></li>
-                <li>1 ICP = 10T cycles</li>
-                <li>Average website: ~380B cycles/month</li>
-            </ul>
-            <p>Calculation: (USD / ICP Price) * 10T = Cycles</p>
-        </div>
-        <form id="payment-form">
-            <div class="slider-container">
-                <label for="cycles-slider">Amount in USD</label>
-                <input type="range" id="cycles-slider" min="1" max="100" step="1" value="10">
-                <div class="cycles-value">
-                    <span class="cycles-amount">7.64B cycles</span>
-                    <span class="dollar-amount">$10.00</span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="card-number">Card number</label>
-                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
-            </div>
-            <div class="form-group">
-                <label for="expiry">Expiration date</label>
-                <input type="text" id="expiry" placeholder="MM / YY" required>
-            </div>
-            <div class="form-group">
-                <label for="cvv">Security code</label>
-                <input type="number" id="cvv" placeholder="123" required>
-            </div>
-            <div class="form-group">
-                <label for="name">Name on card</label>
-                <input type="text" id="name" placeholder="John Doe" required>
-            </div>
-            <button type="submit" class="submit-btn">Pay now</button>
-        </form>
+        <h1>NFL Schedule - Next Week</h1>
+        <div id="schedule"></div>
     </div>
 
     <script>
-        const slider = document.getElementById('cycles-slider');
-        const cyclesAmount = document.querySelector('.cycles-amount');
-        const dollarAmount = document.querySelector('.dollar-amount');
-        const icpPriceElement = document.getElementById('icp-price');
+        const games = [
+            { date: "2024-09-12", time: "20:15", away: "Minnesota Vikings", home: "Philadelphia Eagles" },
+            { date: "2024-09-15", time: "13:00", away: "Green Bay Packers", home: "Atlanta Falcons" },
+            { date: "2024-09-15", time: "13:00", away: "Las Vegas Raiders", home: "Buffalo Bills" },
+            { date: "2024-09-15", time: "13:00", away: "Baltimore Ravens", home: "Cincinnati Bengals" },
+            { date: "2024-09-15", time: "13:00", away: "Seattle Seahawks", home: "Detroit Lions" },
+            { date: "2024-09-15", time: "16:05", away: "Washington Commanders", home: "Denver Broncos" },
+            { date: "2024-09-15", time: "16:25", away: "New York Jets", home: "Dallas Cowboys" },
+            { date: "2024-09-15", time: "20:20", away: "Miami Dolphins", home: "New England Patriots" },
+            { date: "2024-09-16", time: "20:15", away: "New Orleans Saints", home: "Carolina Panthers" }
+        ];
 
-        // Constants for calculation
-        const ICP_PRICE_USD = 7.50;
-        const CYCLES_PER_ICP = 10_000_000_000_000n; // 10 trillion cycles per ICP
+        function formatDate(dateString) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
 
-        function abbreviateNumber(value) {
-            const suffixes = ["", "K", "M", "B", "T"];
-            let suffixNum = 0;
-            while (value >= 1000 && suffixNum < suffixes.length - 1) {
-                suffixNum++;
-                value /= 1000;
+        function groupGamesByDate(games) {
+            return games.reduce((acc, game) => {
+                (acc[game.date] = acc[game.date] || []).push(game);
+                return acc;
+            }, {});
+        }
+
+        function displaySchedule() {
+            const scheduleDiv = document.getElementById('schedule');
+            const groupedGames = groupGamesByDate(games);
+            
+            for (const [date, dayGames] of Object.entries(groupedGames)) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'game-day';
+                
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'day-header';
+                dayHeader.textContent = formatDate(date);
+                dayDiv.appendChild(dayHeader);
+                
+                dayGames.forEach(game => {
+                    const gameDiv = document.createElement('div');
+                    gameDiv.className = 'game';
+                    gameDiv.innerHTML = `
+                        <div class="team">
+                            <div class="team-logo"></div>
+                            <div class="team-name">${game.away}</div>
+                        </div>
+                        <div class="game-info">
+                            <div>${game.time}</div>
+                            <div>@</div>
+                        </div>
+                        <div class="team">
+                            <div class="team-logo"></div>
+                            <div class="team-name">${game.home}</div>
+                        </div>
+                    `;
+                    dayDiv.appendChild(gameDiv);
+                });
+                
+                scheduleDiv.appendChild(dayDiv);
             }
-            
-            let precision = 2;
-            if (value >= 100) precision = 0;
-            else if (value >= 10) precision = 1;
-            
-            return value.toFixed(precision) + suffixes[suffixNum];
         }
 
-        function updateCyclesValue(usdValue) {
-            const icp = usdValue / ICP_PRICE_USD;
-            const cycles = BigInt(Math.floor(icp * Number(CYCLES_PER_ICP)));
-            
-            cyclesAmount.textContent = `${abbreviateNumber(Number(cycles))} cycles`;
-            dollarAmount.textContent = `$${parseFloat(usdValue).toFixed(2)}`;
-        }
-
-        slider.addEventListener('input', (e) => updateCyclesValue(e.target.value));
-
-        document.getElementById('payment-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Payment submitted');
-            alert('Payment processed successfully!');
-        });
-
-        // Initialize with default value
-        updateCyclesValue(slider.value);
-
-        // Update ICP price in the info tooltip
-        icpPriceElement.textContent = ICP_PRICE_USD.toFixed(2);
+        displaySchedule();
     </script>
 </body>
 </html>
